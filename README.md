@@ -1,31 +1,35 @@
 # Docker harjoitus 1
 
-Molemmat client ja server ovat toteutettu pythonilla
+## Projektin kuvaus
 
-## Imageiden buildaus
-```
-docker build -t docker1-server .
-docker build -t docker1-client .
-``` 
-
-## Verkon luonti
-```
-docker network create docker1-network
-```
+Molemmat asiakas ja palvelin ovat toteutettu uv python projekteina. palvelin luo 1kb satunnaista tekstiä ja talletaan tämän tiedostoon. Asiakas pyytää tiedoston, josta palvelin antaa headereissa checksumin, jonka asiakas voi tarkistaa. Palvelin konttiin voidaan määrittää portti --port atribuutilla. Asiakkaaseen voidaan määrittää palvelimen osoite antamalla sen imagen jälkeen. Konteille määritetään verkko, jonka avulla ne voivat kommunikoida keskenään. Konteille määritetään voluumit mihin ne tallentavat tietojaan.
 
 ## Palvelin kontin muodostus
-```
-docker run -d --name server --network docker1-network --volume "$(pwd)/serverdata:/serverdata" docker1-server --port 8001
+
+Suorita projektin juuresta
+
+```bash
+bash server.sh
 ```
 
 ## Asiakas kontin muodostus
-```
-docker run -d --name client --network docker1-network --volume "$(pwd)/clientdata:/clientdata" docker1-client http://server:8001
+
+Suorita projektin juuresta
+
+```bash
+bash client.sh
 ```
 
-## Checksum tarkistus
-```
-docker logs client
+## Tiedostojen tarkastus
+
+### server
+
+```bash
+sudo cat /var/lib/docker/volumes/servervol/_data/randomletters.txt 
 ```
 
-Lopputuloksena docker luo serverdata tai clientdata hakemistot sinne mistä docker run suoritettiin. Näistä hakemistoista löytyy halutut tiedostot
+### client
+
+```bash
+sudo cat /var/lib/docker/volumes/clientvol/_data/received.txt
+```
